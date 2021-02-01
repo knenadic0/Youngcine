@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Mladacina.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +17,7 @@ namespace Mladacina
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+            Helper.connectionString = ConfigurationExtensions.GetConnectionString(Configuration, "main");
         }
 
         public IConfiguration Configuration { get; }
