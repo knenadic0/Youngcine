@@ -1,0 +1,66 @@
+﻿#container {
+    overflow: hidden;
+    position: relative;
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#container img {
+    width: 250vh;
+    height: auto;
+}
+
+.slide {
+    display: block;
+    position: absolute;
+    height: 200px !important;
+    width: 240px !important;
+}
+
+div.slide:hover {
+    cursor: default;
+}
+
+.one {
+    top: 15vh;
+    right: 10vw;
+}
+
+.two {
+    top: 30vh;
+    right: 20vw;
+}
+
+.three {
+    top: 55vh;
+    right: 6vw;
+}
+
+div.container {
+    width: 30vw;
+    position: absolute;
+    top: 25vh;
+    border-radius: 25px;
+    border: solid thin gray;
+    padding: 4rem;
+    left: 6vw;
+    text-align: center
+}
+
+div.container button {
+    display: block;
+}
+
+div.container button:first-child {
+    font-size: 1.75rem;
+    margin-bottom: 10%;
+
+}
+
+
+/* -------------------------- */
+
+

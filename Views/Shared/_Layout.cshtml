@@ -3,38 +3,93 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Mladacina</title>
+    <title>@ViewData["Title"] - Youngcine</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="~/css/Reg.css" />
+    <link rel="stylesheet" href="~/css/Prilagodbe.css" />
+    <link rel="stylesheet" href="~/css/dataTables.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    @*<link rel="stylesheet" href="https://cdn.datatables.net/1.10.23/css/jquery.dataTables.min.css">*@
 </head>
-<body>
+<body style="@ViewData["Body"]">
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Mladacina</a>
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Youngcine</a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
+                <div class="navbar-collapse collapse ">
                     <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                        @if ((string)ViewData["Role"] == "Doctor")
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Doctor" asp-action="Patients">Patients</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Doctor" asp-action="Medicine">Medicine</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Doctor" asp-action="Visits">Visits</a>
+                            </li>
+                        }
+                        else if ((string)ViewData["Role"] == "Pharmacist")
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Pharmacist" asp-action="Patients">Patients</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Pharmacist" asp-action="Medicine">Medicine</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Pharmacist" asp-action="Pharmacies">Career</a>
+                            </li>
+                        }
+                        else if ((string)ViewData["Role"] == "Patient")
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Patient" asp-action="Doctors">Doctors</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Patient" asp-action="Visits">Visits</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Patient" asp-action="Medicine">Medicine</a>
+                            </li>
+                        }
+                    </ul>
+                    @if (ViewData["Role"] != null)
+                    {
+                    <ul class="navbar-nav navbar-right text-right">
+                        <li class="nav-item text-right">
+                            <a class="nav-link text-dark" asp-controller="Home" asp-action="Logout">Logout</a>
                         </li>
                     </ul>
+                    }
                 </div>
             </div>
         </nav>
     </header>
     <div class="container">
+        @if (TempData["AlertType"] != null && TempData["AlertMessage"] != null)
+        {
+        <div class="container">
+            <div class="alert alert-@TempData["AlertType"] alert-dismissible fade show">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                @TempData["AlertMessage"]
+            </div>
+        </div>
+        }
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
+    <footer class="border-top footer">
         <div class="container">
-            &copy; 2021 - Mladacina
+            &copy; 2021 - Youngcine
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

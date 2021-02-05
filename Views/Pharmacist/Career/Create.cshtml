@@ -1,0 +1,45 @@
+﻿@model Mladacina.Models.PharmacistCareer
+@{
+    ViewData["Title"] = "Career";
+    ViewData["Role"] = "Pharmacist";
+}
+
+<div>
+    <div class="w-100 mt-lg-5 container-fluid">
+        <div class="row">
+            <div class="col-lg-10">
+                <h3 class="role">My pharmacy career</h3>
+            </div>
+            <div class="col-lg-2 text-right">
+                <a class="btn btn-info" asp-action="Pharmacies">
+                    <i class="fa fa-chevron-left" aria-hidden="true"></i>&nbsp;&nbsp;Back
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="mt-lg-4">
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="form-horizontal">
+                <hr />
+                @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.PharmacyId, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-12">
+                        @Html.DropDownListFor(model => model.PharmacyId, (IEnumerable<SelectListItem>)ViewData["Pharmacies"], "Select Pharmacy", new { @class = "form-control", @required = "required" })
+                        @Html.ValidationMessageFor(model => model.PharmacyId, "",  new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-2">
+                        <input type="submit" value="Save" class="btn btn-info" />
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

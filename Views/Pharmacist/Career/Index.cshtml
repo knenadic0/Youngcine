@@ -1,0 +1,81 @@
+﻿@model List<Mladacina.Models.PharmacistCareer>
+@{
+    ViewData["Title"] = "Career";
+    ViewData["Role"] = "Pharmacist";
+}
+
+<div>
+    <div class="w-100 mt-lg-5 container-fluid">
+        <div class="row">
+            <div class="col-lg-10">
+                <h3 class="role">My pharmacy career</h3>
+            </div>
+            <div class="col-lg-2 text-right">
+                @if (Model.Count > 0)
+                {
+                    <a class="btn btn-info" asp-action="CareerChange">
+                        <i class="fa fa-pencil" aria-hidden="true"></i>&nbsp;&nbsp;Change
+                    </a>
+                }
+                else
+                {
+                    <a class="btn btn-info" asp-action="CareerStart">
+                        <i class="fa fa-plus" aria-hidden="true"></i>&nbsp;&nbsp;Start
+                    </a>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid mt-lg-5">
+        @if (Model.Count > 0)
+        {
+            <table class="table table-hover mt-4" id="medicineTable">
+                <thead>
+                    <tr>
+                        <th>Pharmacy</th>
+                        <th>Location</th>
+                        <th class="text-center">Worked since</th>
+                        <th class="text-center">Worked until</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (PharmacistCareer item in Model)
+                    {
+                        <tr>
+                            <td>@item.Pharmacy.Name</td>
+                            <td>@item.Pharmacy.Street @item.Pharmacy.Number, @item.Pharmacy.City</td>
+                            <td class="text-center">@item.DateFrom.ToNormalDate()</td>
+                            <td class="text-center">
+                                @if (item.DateTo == null)
+                                {
+                                    <span>&infin;</span>
+                                }
+                                else
+                                {
+                                    <span>@item.DateTo.Value.ToNormalDate()</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <div class="card-body m-5">
+                <h5 class="text-center m-5">No career yet.</h5>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script src="http://cdn.datatables.net/1.10.23/js/jquery.dataTables.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#medicineTable').DataTable({
+                "order": []
+            });
+        });
+    </script>
+}

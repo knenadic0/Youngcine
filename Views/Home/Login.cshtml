@@ -1,0 +1,57 @@
+﻿@model Mladacina.Models.User
+@{
+    ViewData["Title"] = "Login";
+    ViewData["Body"] = "background-image:url(/Mladacina/media/pictures/background/wp.jpg);background-position-x: right;background-size: contain;background-color: #B1B2B6;";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Youngcine</h1>
+    <h5 class="text-center">Young medicine</h5>
+</div>
+
+<div class="mt-lg-10">
+    @using (Html.BeginForm("Login", "Home", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-horizontal reg-div">
+            <h4 class="text-center">User Login</h4>
+            <hr />
+            @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-12">
+                    @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Password, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-12">
+                    @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control", @type = "password" } })
+                    @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            @if (ViewBag.Error != null)
+            {
+                <div form-group text-center racun>
+                    <p class="text-center text-danger">Wrong username or password</p>
+                </div>
+            }
+
+            <div class="form-group text-center racun">
+                <span>Not registred yet?</span>
+                <span><a asp-action="Register">Register now</a></span>
+            </div>
+
+            <div class="form-group">
+                <div class="text-center">
+                    <input type="submit" value="Login" class="btn btn-dark" />
+                </div>
+            </div>
+        </div>
+    }
+</div>

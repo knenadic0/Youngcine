@@ -1,0 +1,202 @@
+﻿body {
+    /*background: url('https://source.unsplash.com/daily');*/
+    /*background-color: wheat;*/
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+    font-family: 'Nunito', sans-serif;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+a {
+    transition: 0.3s ease;
+}
+
+a:hover {
+    text-decoration: none;
+    color: darkblue;
+}
+
+div.reg-div {
+    margin: 8rem auto;
+    border-radius: 25px;
+    padding: 2%;
+    background-color: rgba(255, 255, 255, 0.9);
+    max-width: 36rem;
+}
+
+div.racun > span {
+    margin: auto 4%;  
+}
+
+div.groups {
+    position: relative;
+    margin-top: 3.6rem;
+    width: 100%;
+    min-height: 3.6rem;
+    background-color: rgba(255, 255, 255, 0.7);
+    display: grid;
+    grid-template-columns: auto auto auto auto auto auto auto auto auto;
+    grid-column-gap: 2%;
+    grid-row-gap: 14%;
+    padding: 1%;
+}
+
+div.groups h4 {
+    margin: auto 2%;
+    color: purple;
+    grid-row: 1/span 2;
+}
+
+span.groups {
+    width: auto;
+    margin: auto 1%;
+    vertical-align: middle;
+    line-height: normal;
+    font-size: 13pt;
+    transition: box-shadow 0.4s ease, opacity 0.4s ease;
+    min-width: 8%;
+}
+
+span.groups:hover, div.card:hover {
+    box-shadow: 6px 6px 10px grey;
+    cursor: pointer;
+}
+
+.modal-footer > * {
+    margin: .8rem;
+}
+
+div.create {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+}
+
+div.create button {
+    padding: 0;
+    margin-right: 40px;
+}
+
+div.create button img {
+    transition: 0.3s ease-out;
+}
+
+div.create button:focus {
+    box-shadow: none;
+}
+
+div.create button:focus img, div.create button:hover img {
+    filter: brightness(150%);
+}
+
+div.create div.dropdown-menu {
+    background-color: transparent;
+    border: none;
+    padding-right: 40px;
+}
+
+div.create div.dropdown-menu a.dropdown-item {
+    border-radius: 20px;
+    margin-bottom: 15px;
+    background-color: whitesmoke;
+    font-size: 16pt;
+    cursor: pointer;
+}
+
+.slider {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 15px;
+    border-radius: 5px;
+    background-color: white;
+    outline: none;
+    -webkit-transition: .2s;
+    transition: all .2s;
+}
+
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background-color: purple;
+    cursor: pointer;
+}
+
+.slider::-moz-range-thumb {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background-color: purple;
+    cursor: pointer;
+}
+
+div.tasks {
+    position: relative;
+    padding: 3%;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+div.tasks div.card {
+    max-width: 12rem;
+    min-width: 12rem;
+    margin-bottom: 1rem;
+    transition: box-shadow 0.4s ease, opacity 0.4s ease;
+}
+
+div.card {
+    transition: box-shadow 0.4s ease, opacity 0.4s ease;
+}
+
+label.card-title {
+    font-size: 14pt;
+    float: right;
+}
+
+hr {
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+hr.form-hr {
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+}
+
+input.taskCheck {
+    float: right;
+    right: 0;
+    left: auto
+}
+
+div.custom-checkbox h5 {
+    position: absolute;
+    left: 0;
+}
+
+.custom-checkbox .custom-control-input:checked ~ .custom-control-label::after {
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3E%3Cpath fill='purple' d='M6.564.75l-3.59 3.612-1.538-1.55L0 4.26 2.974 7.25 8 2.193z'/%3E%3C/svg%3E");
+}
+.custom-control-label:before, .custom-checkbox .custom-control-input:checked ~ .custom-control-label::before {
+    background-color: whitesmoke;
+}
+
+.custom-control-label:before, .custom-checkbox .custom-control-input:checked ~ .custom-control-label::before,
+.custom-control-label:before, .custom-checkbox .custom-control-input:checked ~ .custom-control-label::after {
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+div.card:hover .custom-control-label:before, .custom-checkbox .custom-control-input:checked ~ .custom-control-label::before,
+div.card:hover .custom-control-label:before, .custom-checkbox .custom-control-input:checked ~ .custom-control-label::after {
+    opacity: 1;
+    transition: opacity 0.4s ease;
+}
+

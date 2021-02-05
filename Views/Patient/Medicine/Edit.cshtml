@@ -1,0 +1,99 @@
+﻿@model Mladacina.Models.PatientMedicine
+@{
+    ViewData["Title"] = "Medicine";
+    ViewData["Role"] = "Patient";
+}
+
+<div>
+    <div class="w-100 mt-lg-5 container-fluid">
+        <div class="row">
+            <div class="col-lg-10">
+                <h3 class="role">Medicine</h3>
+            </div>
+            <div class="col-lg-2 text-right">
+                <a class="btn btn-info" asp-action="Medicine">
+                    <i class="fa fa-chevron-left" aria-hidden="true"></i>&nbsp;&nbsp;Back
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="mt-lg-4">
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+
+        <div class="form-horizontal">
+            <hr />
+            @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Medicine.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-12">
+                    @Html.EditorFor(model => model.Medicine.Name, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Medicine.Type, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-12">
+                    @Html.EditorFor(model => model.Medicine.Type, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.Label("Price", "Price (HRK)", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-12">
+                    @Html.EditorFor(model => model.Medicine.Price, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.Label("Quantity", "Quantity (pcs)", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-12">
+                    @Html.EditorFor(model => model.Medicine.Quantity, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Medicine.Description, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-12">
+                    @Html.EditorFor(model => model.Medicine.Description, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.Label("DateFrom", "Taken Since", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-12">
+                    <input class="form-control" readonly="readonly" type="text" value="@Model.DateFrom.ToNormalDate()" />
+                </div>
+            </div>
+
+            @if (Model.DateTo != null)
+            {
+                <div class="form-group">
+                    @Html.Label("DateTo", "Taken Until", htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-12">
+                        <input class="form-control" readonly="readonly" type="text" value="@Model.DateTo.Value.ToNormalDate()" />
+                    </div>
+                </div>
+            }
+
+            <div class="form-group">
+                @Html.Label("Pharmacist.User.FirstName", "Pharmacist", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-12">
+                    <input class="form-control" readonly="readonly" type="text" value="@Model.Pharmacist.User.FirstName @Model.Pharmacist.User.LastName" />
+                </div>
+            </div>
+
+            @if (Model.DateTo == null)
+            {
+                <div class="form-group">
+                    <div class="col-md-2">
+                        <input type="submit" value="Finish taking" class="btn btn-info" />
+                    </div>
+                </div>
+            }
+        </div>
+        }
+    </div>
+</div>

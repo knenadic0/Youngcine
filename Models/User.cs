@@ -1,32 +1,147 @@
 ﻿using Npgsql;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Configuration;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Mladacina.Models
 {
     public class User
     {
-        private NpgsqlConnection connection;
+        public Guid Id { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        [Required(ErrorMessage = "Please enter email")]
+        public string Email { get; set; }
+        [Required(ErrorMessage = "Please enter password")]
+        public string Password { get; set; }
+        [DisplayName("Date of birth")]
+        [Required(ErrorMessage = "Please enter date of birth")]
+        public DateTime DOB { get; set; }
+        public Sex Sex { get; set; }
+        public string Street { get; set; }
+        public int Number { get; set; }
+        public string City { get; set; }
+        public long Picture { get; set; }
+        public Role Role { get; set; } = Role.Patient;
+        [DisplayName("Active since")]
+        public DateTime? ActiveSince { get; set; }
+        [DisplayName("Social number")]
+        public string SN { get; set; }
 
-        public User()
+        public static async Task RegisterUserAsync(User model)
         {
-            connection = new NpgsqlConnection(Helper.connectionString);
+            await Helper.OpenLocalConnectionAsync();
+
+            Guid uuid = Guid.NewGuid();
+            string query = $"insert into \"User\" values('{uuid}', '{model.FirstName}', '{model.LastName}', '{model.Email}', '{SHA256(model.Password)}', " +
+                $"'{model.DOB.ToDatabaseDate()}', '{model.Sex}', ROW('{model.Street}', '{model.Number}', '{model.City}'))";
+            await Helper.NonQueryAsync(query);
+
+            switch (model.Role)
+            {
+                case Role.Patient:
+                    query = $"insert into \"Patient\" values(default, '{uuid}', '{model.SN}')";
+                    break;
+                case Role.Pharmacist:
+                    query = $"insert into \"Pharmacist\" values (default, '{uuid}', '{(model.ActiveSince.HasValue ? model.ActiveSince.Value.ToDatabaseDate() : string.Empty)}')";
+                    break;
+                case Role.Doctor:
+                    query = $"insert into \"Doctor\" values (default, '{uuid}', '{(model.ActiveSince.HasValue ? model.ActiveSince.Value.ToDatabaseDate() : string.Empty)}')";
+                    break;
+            }
+            await Helper.NonQueryAsync(query);
+
+            await Helper.CloseLocalConnectionAsync();
         }
 
-        private bool OpenLocalConnection()
+        public static async Task<Tuple<int, object>> LoginUserAsync(User model)
         {
-            try
+            await Helper.OpenLocalConnectionAsync();
+
+            string query = $"select * from \"User\" where \"Email\"='{model.Email}' and \"Password\"='{SHA256(model.Password)}'";
+            NpgsqlDataReader reader = await Helper.QueryAsync(query);
+            int role = -1;
+            object roleObject = null;
+            await reader.ReadAsync();
+            model.Id = (Guid)reader["Id"];
+            model.FirstName = reader["FirstName"].ToString();
+            model.LastName = reader["LastName"].ToString();
+            await reader.CloseAsync();
+
+            query = $"select * from \"Patient\" where \"UserId\"='{model.Id}'";
+            reader = await Helper.QueryAsync(query);
+            if (reader.HasRows)
             {
-                connection.Open();
-                return true;
+                role = 1;
+                model.Role = Role.Patient;
+
+                await reader.ReadAsync();
+                Patient patient = new Patient()
+                {
+                    Id = (Guid)reader["Id"],
+                    SN = reader["SN"].ToString()
+                };
+                roleObject = patient;
+                await reader.CloseAsync();
             }
-            catch (Exception)
+            await reader.CloseAsync();
+
+            query = $"select * from \"Pharmacist\" where \"UserId\"='{model.Id}'";
+            reader = await Helper.QueryAsync(query);
+            if (reader.HasRows)
             {
-                return false;
+                role = 2;
+                model.Role = Role.Pharmacist;
+
+                await reader.ReadAsync();
+                Pharmacist pharmacist = new Pharmacist()
+                {
+                    Id = (Guid)reader["Id"],
+                    ActiveSince = (DateTime)reader["ActiveSince"]
+                };
+                roleObject = pharmacist;
+                await reader.CloseAsync();
             }
+            await reader.CloseAsync();
+
+            query = $"select * from \"Doctor\" where \"UserId\"='{model.Id}'";
+            reader = await Helper.QueryAsync(query);
+            if (reader.HasRows)
+            {
+                role = 3;
+                model.Role = Role.Doctor;
+
+                await reader.ReadAsync();
+                Doctor doctor = new Doctor()
+                {
+                    Id = (Guid)reader["Id"],
+                    ActiveSince = (DateTime)reader["ActiveSince"]
+                };
+                roleObject = doctor;
+                await reader.CloseAsync();
+            }
+            await reader.CloseAsync();
+
+            await Helper.CloseLocalConnectionAsync();
+            return await Task.FromResult(Tuple.Create(role, roleObject));
+        }
+
+        private static string SHA256(string randomString)
+        {
+            var crypt = new SHA256Managed();
+            var hash = new StringBuilder();
+            byte[] crypto = crypt.ComputeHash(Encoding.UTF8.GetBytes(randomString));
+            foreach (byte theByte in crypto)
+            {
+                hash.Append(theByte.ToString("x2"));
+            }
+            return hash.ToString();
         }
     }
 }

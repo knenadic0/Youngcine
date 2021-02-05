@@ -1,0 +1,90 @@
+﻿@media only screen and (max-width: 1084px) {
+
+    header.index {
+        height: 4rem;
+    }
+
+    div.container {
+        max-width: 90%;
+        width: inherit;
+        top: 6rem;
+        padding: 2rem;
+    }
+
+    div.container button {
+        margin: auto;
+    }
+
+    div.slide {
+        height: 10rem !important;
+        width: 12rem !important;
+    }
+
+    div.one {
+        top: 45%;
+        left: 40%;
+    }
+
+    div.two {
+        top: 60%;
+        left: 26%;
+    }
+
+    div.three {
+        top: 74%;
+        left: 35%;
+    }
+}
+
+@media only screen and (max-width: 576px) {
+
+    header {
+        position: absolute;
+        height: 6.2rem;
+        display: grid;
+        grid-template-columns: auto auto auto auto auto;
+    }
+
+    header.racun h3 {
+        grid-column: 1/ span 4;
+    }
+
+    header h3 {
+        grid-column: 1 / span 5;
+        text-align: center;
+    }
+
+    header h3 a::after {
+        display: none;
+    }
+
+    div.groups {
+        margin-top: 6.2rem;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    div.groups h4 {
+        flex: 1 1 100%;
+        text-align: center;
+    }
+
+    div.groups span {
+        min-width: 4rem;
+        width: auto;
+        margin: 1%;
+    }
+
+    div.tasks div.card {
+        min-width: 100%;
+    }
+
+    div.create button {
+        margin-right: 0;
+    }
+
+    div.reg-div {
+        margin: 6rem 1rem;
+    }
+}

@@ -1,7 +1,94 @@
-﻿@{
+﻿@model Mladacina.Models.User
+@{
     ViewData["Title"] = "Home Page";
+    ViewData["Role"] = Model.Role.ToString();
 }
 
 <div class="text-center">
-    <h1 class="display-4">Pozdrav mladi</h1>
+    <div>
+        <h1 class="display-4 ">Youngcine</h1>
+        <h5 class="text-center mb-4">Young medicine</h5>
+        <hr />
+    </div>
+    <div>
+        <h3 class="mt-lg-5 role">@Model.FirstName @Model.LastName</h3>
+        <h3 class="role">(@Model.Role.ToString())</h3>
+        <div class="card-columns mt-5">
+            @if (Model.Role == Role.Doctor)
+            {
+                <div class="card" id="patientsCard">
+                    <a class="nav-link text-dark" asp-area="" asp-controller="Doctor" asp-action="Patients">
+                        <div class="card-body">
+                            Patients
+                        </div>
+                    </a>
+                </div>
+                <div class="card" id="patientsCard">
+                    <a class="nav-link text-dark" asp-area="" asp-controller="Doctor" asp-action="Medicine">
+                        <div class="card-body">
+                            Medicine
+                        </div>
+                    </a>
+                </div>
+                <div class="card" id="patientsCard">
+                    <a class="nav-link text-dark" asp-area="" asp-controller="Doctor" asp-action="Visits">
+                        <div class="card-body">
+                            Visits
+                        </div>
+                    </a>
+                </div>
+            }
+            else if (Model.Role == Role.Pharmacist)
+            {
+                <div class="card" id="patientsCard">
+                    <a class="nav-link text-dark" asp-area="" asp-controller="Pharmacist" asp-action="Patients">
+                        <div class="card-body">
+                            Patients
+                        </div>
+                    </a>
+                </div>
+                <div class="card" id="patientsCard">
+                    <a class="nav-link text-dark" asp-area="" asp-controller="Pharmacist" asp-action="Medicine">
+                        <div class="card-body">
+                            Medicine
+                        </div>
+                    </a>
+                </div>
+                <div class="card" id="patientsCard">
+                    <a class="nav-link text-dark" asp-area="" asp-controller="Pharmacist" asp-action="Pharmacies">
+                        <div class="card-body">
+                            Career
+                        </div>
+                    </a>
+                </div>
+            }
+            else if (Model.Role == Role.Patient)
+            {
+                <div class="card" id="patientsCard">
+                    <a class="nav-link text-dark" asp-area="" asp-controller="Patient" asp-action="Doctors">
+                        <div class="card-body">
+                            Doctors
+                        </div>
+                    </a>
+                </div>
+                <div class="card" id="patientsCard">
+                    <a class="nav-link text-dark" asp-area="" asp-controller="Patient" asp-action="Visits">
+                        <div class="card-body">
+                            Visits
+                        </div>
+                    </a>
+                </div>
+                <div class="card" id="patientsCard">
+                    <a class="nav-link text-dark" asp-area="" asp-controller="Patient" asp-action="Medicine">
+                        <div class="card-body">
+                            Medicine
+                        </div>
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
+    <div class="card mt-4 pic">
+        <img src="~/media/pictures/cards/@(Model.Role.ToString()).jpg" />
+    </div>
 </div>
