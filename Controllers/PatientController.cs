@@ -151,6 +151,27 @@ namespace Mladacina.Controllers
 
         #endregion Doctors
 
+        #region Visits
+
+        public async Task<IActionResult> Visits()
+        {
+            User user = HttpContext.Session.GetObjectFromJson<User>("User");
+            if (user == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            else if (user.Role != Role.Patient)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            Patient patient = HttpContext.Session.GetObjectFromJson<Patient>("UserRole");
+            List<Visit> model = await Patient.GetPacientVisitsAsync(patient.Id.ToString());
+            return View("Visits/Index", model);
+        }
+
+        #endregion Visits
+
         #region Medicine
 
         public async Task<IActionResult> Medicine()
@@ -168,6 +189,7 @@ namespace Mladacina.Controllers
             Patient patient = HttpContext.Session.GetObjectFromJson<Patient>("UserRole");
             dynamic medicines = new ExpandoObject();
             medicines.WithoutPrescription = await patient.GetPatientWithoutPrescriptionMedicinesAsync();
+            medicines.WithPrescription = await patient.GetPatientPrescriptionMedicinesAsync();
             return View("Medicine/Index", medicines);
         }
 
@@ -215,6 +237,53 @@ namespace Mladacina.Controllers
 
             TempData["AlertType"] = "success";
             TempData["AlertMessage"] = $"Medicine {model.Medicine.Name} marked as done taking.";
+            return RedirectToAction("Medicine");
+        }
+
+        [HttpGet]
+        [Route("[controller]/Medicine/Prescription/{id}")]
+        public async Task<IActionResult> PrescriptionEdit(string id)
+        {
+            User user = HttpContext.Session.GetObjectFromJson<User>("User");
+            if (user == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            else if (user.Role != Role.Patient)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            Prescription model = await Prescription.GetPrescriptionAsync(id);
+            return View("Medicine/EditPrescription", model);
+        }
+
+        [HttpPost]
+        [Route("[controller]/Medicine/Prescription/{id}")]
+        public async Task<IActionResult> PrescriptionEdit(Prescription model)
+        {
+            User user = HttpContext.Session.GetObjectFromJson<User>("User");
+            if (user == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            else if (user.Role != Role.Patient)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            try
+            {
+                await model.FinishPrescriptionAsync();
+            }
+            catch (PostgresException e)
+            {
+                ModelState.AddModelError("EditPatientPrescription", e.MessageText);
+                return View("Medicine/EditPrescription", model);
+            }
+
+            TempData["AlertType"] = "success";
+            TempData["AlertMessage"] = $"Prescription medicine {model.Medicine.Name} marked as done taking.";
             return RedirectToAction("Medicine");
         }
 

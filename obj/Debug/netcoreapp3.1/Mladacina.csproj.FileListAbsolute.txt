@@ -74,3 +74,9 @@ C:\Users\Kacko\source\repos\Mladacina\obj\Debug\netcoreapp3.1\Razor\Views\Patien
 C:\Users\Kacko\source\repos\Mladacina\obj\Debug\netcoreapp3.1\Razor\Views\Patient\Doctors\Create.cshtml.g.cs
 C:\Users\Kacko\source\repos\Mladacina\obj\Debug\netcoreapp3.1\Razor\Views\Patient\Medicine\Index.cshtml.g.cs
 C:\Users\Kacko\source\repos\Mladacina\obj\Debug\netcoreapp3.1\Razor\Views\Patient\Medicine\Edit.cshtml.g.cs
+C:\Users\Kacko\source\repos\Mladacina\obj\Debug\netcoreapp3.1\Razor\Views\Doctor\Patients\Index.cshtml.g.cs
+C:\Users\Kacko\source\repos\Mladacina\obj\Debug\netcoreapp3.1\Razor\Views\Doctor\Patients\View.cshtml.g.cs
+C:\Users\Kacko\source\repos\Mladacina\obj\Debug\netcoreapp3.1\Razor\Views\Doctor\Patients\Visits\Create.cshtml.g.cs
+C:\Users\Kacko\source\repos\Mladacina\obj\Debug\netcoreapp3.1\Razor\Views\Doctor\Visits\Index.cshtml.g.cs
+C:\Users\Kacko\source\repos\Mladacina\obj\Debug\netcoreapp3.1\Razor\Views\Patient\Visits\Index.cshtml.g.cs
+C:\Users\Kacko\source\repos\Mladacina\obj\Debug\netcoreapp3.1\Razor\Views\Patient\Medicine\EditPrescription.cshtml.g.cs

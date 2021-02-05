@@ -13,7 +13,7 @@
             </div>
         </div>
     </div>
-    <div class="container-fluid mt-lg-5">
+    <div class="container-fluid mt-4 mb-5">
         @if (Helper.HasProperty(Model, "WithoutPrescription") && Model.WithoutPrescription != null && Model.WithoutPrescription.Count > 0)
         {
             <table class="table table-hover mt-4" id="withoutPrescriptionTable">
@@ -45,7 +45,16 @@
                                     <span>@item.Medicine.Quantity pcs</span>
                                 }
                             </td>
-                            <td class="text-center">@item.DateFrom.ToNormalDate()</td>
+                            <td class="text-center">
+                                @if (item.DateFrom == null)
+                                {
+                                    <span>&infin;</span>
+                                }
+                                else
+                                {
+                                    <span>@item.DateFrom.ToNormalDate()</span>
+                                }
+                            </td>
                             <td class="text-center">
                                 @if (item.DateTo == null)
                                 {
@@ -73,37 +82,39 @@
             </div>
         }
     </div>
-
-    <div class="w-100 mt-lg-10 container-fluid">
+    <hr />
+    <div class="w-100 mt-5 container-fluid">
         <div class="row">
             <div class="col-lg-12">
                 <h3 class="role">My prescriptioned medicine</h3>
             </div>
         </div>
     </div>
-    <div class="container-fluid mt-lg-5">
+    <div class="container-fluid mt-4">
         @if (Helper.HasProperty(Model, "WithPrescription") && Model.WithPrescription != null && Model.WithPrescription.Count > 0)
         {
             <table class="table table-hover mt-4" id="withPrescriptionTable">
                 <thead>
                     <tr>
-                        <th>Name</th>
-                        <th>Type</th>
-                        <th>Price</th>
-                        <th>Quantity</th>
-                        <th class="text-center">Taken Since</th>
-                        <th class="text-center">Taken Until</th>
-                        <th class="text-center">Details</th>
+                        <th class="align-middle">Diagnosis</th>
+                        <th class="align-middle">Name</th>
+                        <th class="align-middle">Type</th>
+                        <th class="align-middle">Price</th>
+                        <th class="align-middle">Quantity</th>
+                        <th class="align-middle text-center">Taken Since</th>
+                        <th class="align-middle text-center">Taken Until</th>
+                        <th class="align-middle text-center">View</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (PatientMedicine item in Model.WithPrescription)
+                    @foreach (Prescription item in Model.WithPrescription)
                     {
                         <tr>
-                            <td>@item.Medicine.Name</td>
-                            <td>@item.Medicine.Type.ToString()</td>
-                            <td>@item.Medicine.Price HRK</td>
-                            <td>
+                            <td class="align-middle">@item.Visit.Diagnosis</td>
+                            <td class="align-middle">@item.Medicine.Name</td>
+                            <td class="align-middle">@item.Medicine.Type.ToString()</td>
+                            <td class="align-middle">@item.Medicine.Price HRK</td>
+                            <td class="align-middle">
                                 @if (item.Medicine.Type == MedicineType.Syrup)
                                 {
                                     <span>@item.Medicine.Quantity ml</span>
@@ -113,8 +124,17 @@
                                     <span>@item.Medicine.Quantity pcs</span>
                                 }
                             </td>
-                            <td class="text-center">@item.DateFrom.ToNormalDate()</td>
-                            <td class="text-center">
+                            <td class="text-center align-middle">
+                                @if (item.DateFrom == null)
+                                {
+                                    <span>&infin;</span>
+                                }
+                                else
+                                {
+                                    <span>@item.DateFrom.Value.ToNormalDate()</span>
+                                }
+                            </td>
+                            <td class="text-center align-middle">
                                 @if (item.DateTo == null)
                                 {
                                     <span>&infin;</span>
@@ -124,8 +144,8 @@
                                     <span>@item.DateTo.Value.ToNormalDate()</span>
                                 }
                             </td>
-                            <td class="text-center">
-                                <a asp-action="Info">
+                            <td class="text-center align-middle">
+                                <a asp-action="PrescriptionEdit" asp-route-id="@item.Id">
                                     <i class="fa fa-eye" aria-hidden="true"></i>
                                 </a>
                             </td>

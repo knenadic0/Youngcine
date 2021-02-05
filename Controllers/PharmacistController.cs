@@ -11,6 +11,10 @@ namespace Mladacina.Controllers
 {
     public class PharmacistController : Controller
     {
+        #region Patients
+
+        #endregion Patients
+
         #region Medicine
 
         public async Task<IActionResult> Medicine()
@@ -62,7 +66,7 @@ namespace Mladacina.Controllers
 
             try
             {
-                await Models.Medicine.CreateMedicineAsync(model);
+                await model.CreateMedicineAsync();
             }
             catch (PostgresException e)
             {
@@ -124,7 +128,7 @@ namespace Mladacina.Controllers
 
         #endregion Medicine
 
-        #region Pharmacies
+        #region Career
 
         [Route("[controller]/Career")]
         public async Task<IActionResult> Pharmacies()
@@ -261,6 +265,6 @@ namespace Mladacina.Controllers
             return RedirectToAction("Pharmacies");
         }
 
-        #endregion Pharmacies
+        #endregion Career
     }
 }

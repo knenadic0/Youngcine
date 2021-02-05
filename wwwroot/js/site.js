@@ -1,4 +1,12 @@
-﻿// Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
-// for details on configuring this project to bundle and minify static web assets.
+﻿$(document).ready(function () {
+    var url = window.location.href;
+    url = url.substr(url.indexOf("Mladacina"));
+    url = url.substr(url.indexOf("/") + 1);
+    url = url.substr(url.indexOf("/") + 1);
+    if (url.indexOf("/") != -1) {
+        url = url.substring(0, url.indexOf("/"));
+    }
 
-// Write your JavaScript code.
+    var el = "." + url.toLowerCase() + "-nav";
+    $(el).addClass("active");
+})

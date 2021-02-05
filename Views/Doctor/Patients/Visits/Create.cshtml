@@ -1,0 +1,71 @@
+﻿@model Mladacina.Models.Visit
+@{
+    ViewData["Title"] = "Patients";
+    ViewData["Role"] = "Doctor";
+    var patient = (Patient)ViewData["Patient"];
+}
+
+<div>
+    <div class="w-100 mt-lg-5 container-fluid">
+        <div class="row">
+            <div class="col-lg-10">
+                <h3 class="role">New @patient.User.FirstName @patient.User.LastName's visit</h3>
+            </div>
+            <div class="col-lg-2 text-right">
+                <a class="btn btn-info" asp-action="PatientView" asp-route-id="@patient.Id">
+                    <i class="fa fa-chevron-left" aria-hidden="true"></i>&nbsp;&nbsp;Back
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="mt-lg-4">
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="form-horizontal">
+                <hr />
+                @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+                @Html.HiddenFor(model => model.PatientDoctorId)
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Sympthoms, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-12">
+                        @Html.EditorFor(model => model.Sympthoms, new { htmlAttributes = new { @class = "form-control", @required = "required" } })
+                        @Html.ValidationMessageFor(model => model.Sympthoms, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Diagnosis, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-12">
+                        @Html.EditorFor(model => model.Diagnosis, new { htmlAttributes = new { @class = "form-control", @required = "required" } })
+                        @Html.ValidationMessageFor(model => model.Diagnosis, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.Label("Medicines", "Prescriptions", htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-12 medicine-dropdown">
+                        <select class="selectpicker" multiple data-live-search="true" id="Medicines" name="Medicines">
+                              @foreach (Medicine medicine in (List<Medicine>)ViewData["Medicine"])
+                              {
+                                  string measureUnit = medicine.Type == MedicineType.Syrup ? "ml" : "pcs";
+                                  <option value="@medicine.Id">@medicine.Name (@medicine.Quantity @measureUnit)</option>
+                              }
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-2">
+                        <input type="submit" value="Save" class="btn btn-info" />
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
+}

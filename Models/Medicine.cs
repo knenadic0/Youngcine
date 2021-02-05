@@ -72,12 +72,12 @@ namespace Mladacina.Models
             return medicine;
         }
 
-        public static async Task CreateMedicineAsync(Medicine model)
+        public async Task CreateMedicineAsync()
         {
             await Helper.OpenLocalConnectionAsync();
 
-            string query = $"insert into \"Medicine\" values(default, '{model.Name}', {model.Price}, '{model.Type}', {model.Quantity}, " +
-                $"'{model.WithoutPrescription}', '{model.Description}')";
+            string query = $"insert into \"Medicine\" values(default, '{Name}', {Price}, '{Type}', {Quantity}, " +
+                $"'{WithoutPrescription}', '{Description}')";
             await Helper.NonQueryAsync(query);
 
             await Helper.CloseLocalConnectionAsync();

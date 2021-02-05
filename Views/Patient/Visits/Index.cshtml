@@ -1,0 +1,84 @@
+﻿@model List<Mladacina.Models.Visit>
+@{
+    ViewData["Title"] = "Visits";
+    ViewData["Role"] = "Patient";
+}
+
+<div>
+    <div class="w-100 mt-lg-5 container-fluid">
+        <div class="row">
+            <div class="col-lg-12">
+                <h3 class="role">My visits</h3>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid mt-lg-5">
+        @if (Model != null && Model.Count > 0)
+        {
+            <table class="table table-hover mt-4" id="visitsTable">
+                <thead>
+                    <tr>
+                        <th class="w-10">Doctor</th>
+                        <th class="w-35">Sympthoms</th>
+                        <th class="w-20">Diagnosis</th>
+                        <th class="w-10">Date</th>
+                        <th class="w-10 text-center">Healed</th>
+                        <th class="w-15">Prescriptions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (Visit item in Model)
+                    {
+                        <tr>
+                            <td class="align-middle">@item.PatientDoctor.Doctor.User.FirstName @item.PatientDoctor.Doctor.User.LastName</td>
+                            <td class="align-middle">@item.Sympthoms</td>
+                            <td class="align-middle">@item.Diagnosis</td>
+                            <td class="align-middle">@item.DateFrom.ToNormalDate()</td>
+                            <td class="align-middle text-center">
+                                @if (item.DateTo.HasValue)
+                                {
+                                    <span>@item.DateTo.Value.ToNormalDate()</span>
+                                }
+                                else
+                                {
+                                    <span>&infin;</span>
+                                }
+                            </td>
+                            @if (item.Prescriptions.Count > 0)
+                            {
+                                <td class="align-middle">
+                                    @foreach (Prescription prescription in item.Prescriptions)
+                                    {
+                                        string measureUnit = prescription.Medicine.Type == MedicineType.Syrup ? "ml" : "pcs";
+                                        <span class="d-block">
+                                            @prescription.Medicine.Name (@prescription.Medicine.Quantity @measureUnit)
+                                        </span>
+                                    }
+                                </td>
+                            }
+                            else
+                            {
+                                <td class="align-middle text-center">/</td>
+                            }
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <div class="card-body m-5">
+                <h5 class="text-center m-5">No visits yet.</h5>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script src="http://cdn.datatables.net/1.10.23/js/jquery.dataTables.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#visitsTable').DataTable();
+        });
+    </script>
+}

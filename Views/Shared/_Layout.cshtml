@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/png" href="~/favicon.ico" />
     <title>@ViewData["Title"] - Youngcine</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
@@ -10,7 +11,8 @@
     <link rel="stylesheet" href="~/css/Prilagodbe.css" />
     <link rel="stylesheet" href="~/css/dataTables.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    @*<link rel="stylesheet" href="https://cdn.datatables.net/1.10.23/css/jquery.dataTables.min.css">*@
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css" />
+
 </head>
 <body style="@ViewData["Body"]">
     <header>
@@ -25,37 +27,37 @@
                     <ul class="navbar-nav flex-grow-1">
                         @if ((string)ViewData["Role"] == "Doctor")
                         {
-                            <li class="nav-item">
+                            <li class="nav-item patients-nav">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Doctor" asp-action="Patients">Patients</a>
                             </li>
-                            <li class="nav-item">
+                            <li class="nav-item medicine-nav">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Doctor" asp-action="Medicine">Medicine</a>
                             </li>
-                            <li class="nav-item">
+                            <li class="nav-item visits-nav">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Doctor" asp-action="Visits">Visits</a>
                             </li>
                         }
                         else if ((string)ViewData["Role"] == "Pharmacist")
                         {
-                            <li class="nav-item">
+                            <li class="nav-item patients-nav">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Pharmacist" asp-action="Patients">Patients</a>
                             </li>
-                            <li class="nav-item">
+                            <li class="nav-item medicine-nav">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Pharmacist" asp-action="Medicine">Medicine</a>
                             </li>
-                            <li class="nav-item">
+                            <li class="nav-item career-nav">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Pharmacist" asp-action="Pharmacies">Career</a>
                             </li>
                         }
                         else if ((string)ViewData["Role"] == "Patient")
                         {
-                            <li class="nav-item">
+                            <li class="nav-item doctors-nav">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Patient" asp-action="Doctors">Doctors</a>
                             </li>
-                            <li class="nav-item">
+                            <li class="nav-item visits-nav">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Patient" asp-action="Visits">Visits</a>
                             </li>
-                            <li class="nav-item">
+                            <li class="nav-item medicine-nav">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Patient" asp-action="Medicine">Medicine</a>
                             </li>
                         }
