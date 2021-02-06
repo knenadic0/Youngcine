@@ -45,6 +45,38 @@ namespace Mladacina.Models
             return patient;
         }
 
+        public static async Task<List<Patient>> GetPatientsAsync()
+        {
+            await Helper.OpenLocalConnectionAsync();
+
+            string query = $"select * from \"Patient\" p join \"User\" u on p.\"UserId\"=u.\"Id\"";
+            NpgsqlDataReader reader = await Helper.QueryAsync(query);
+            List<Patient> patients = new List<Patient>();
+            while (await reader.ReadAsync())
+            {
+                Patient patient = new Patient()
+                {
+                    Id = Guid.Parse(reader[0].ToString()),
+                    UserId = Guid.Parse(reader["UserId"].ToString()),
+                    SN = reader["SN"].ToString()
+                };
+                User patientUser = new User()
+                {
+                    Id = patient.UserId,
+                    FirstName = reader["FirstName"].ToString(),
+                    LastName = reader["LastName"].ToString(),
+                    DOB = (DateTime)reader["DOB"],
+                    Sex = (Sex)Enum.Parse(typeof(Sex), reader["Sex"].ToString())
+                };
+                patient.User = patientUser;
+                patients.Add(patient);
+            }
+            await reader.CloseAsync();
+            await Helper.CloseLocalConnectionAsync();
+
+            return patients;
+        }
+
         public async Task<List<PatientDoctor>> GetPatientDoctorsAsync()
         {
             await Helper.OpenLocalConnectionAsync();

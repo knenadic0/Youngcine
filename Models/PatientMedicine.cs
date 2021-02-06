@@ -17,6 +17,7 @@ namespace Mladacina.Models
         public DateTime? DateTo { get; set; }
         public Guid PharmacistId { get; set; }
         public Pharmacist Pharmacist { get; set; }
+        public string[] Medicines { get; set; }
 
         public static async Task<PatientMedicine> GetPatientMedicineAsync(string id)
         {
@@ -76,6 +77,24 @@ namespace Mladacina.Models
             await Helper.CloseLocalConnectionAsync();
 
             return patientMedicine;
+        }
+
+        public async Task CreatePatientMedicineAsync()
+        {
+            await Helper.OpenLocalConnectionAsync();
+
+            if (Medicines != null && Medicines.Length > 0)
+            {
+                string query = $"insert into \"PatientMedicine\" values";
+                foreach (string medicine in Medicines)
+                {
+                    query += $"(default, '{PatientId}', '{medicine}', default, default, '{PharmacistId}'),";
+                }
+                query = query.Substring(0, query.Length - 1);
+                await Helper.NonQueryAsync(query);
+            }
+
+            await Helper.CloseLocalConnectionAsync();
         }
 
         public async Task FinishMedicineAsync()

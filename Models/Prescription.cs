@@ -88,6 +88,37 @@ namespace Mladacina.Models
             return prescription;
         }
 
+        public static async Task<Tuple<string, string>> GetPatientIdAsync(string id)
+        {
+            await Helper.OpenLocalConnectionAsync();
+
+            string query = $"select * from \"Prescription\" pr join \"Visit\" v on pr.\"VisitId\"=v.\"Id\" " +
+                $"join \"PatientDoctor\" pd on v.\"PatientDoctorId\"=pd.\"Id\" join \"Medicine\" m on pr.\"MedicineId\"=m.\"Id\" where pr.\"Id\"='{id}'";
+            NpgsqlDataReader reader = await Helper.QueryAsync(query);
+            string patientId = null;
+            string medicine = null;
+            if (reader.HasRows)
+            {
+                await reader.ReadAsync();
+                patientId = reader["PatientId"].ToString();
+                medicine = reader["Name"].ToString();
+            }
+            await reader.CloseAsync();
+            await Helper.CloseLocalConnectionAsync();
+
+            return Tuple.Create(patientId, medicine);
+        }
+
+        public static async Task StartPrescriptionAsync(string id)
+        {
+            await Helper.OpenLocalConnectionAsync();
+
+            string query = $"update \"Prescription\" set \"DateFrom\"=now() where \"Id\"='{id}'";
+            await Helper.NonQueryAsync(query);
+
+            await Helper.CloseLocalConnectionAsync();
+        }
+
         public async Task FinishPrescriptionAsync()
         {
             await Helper.OpenLocalConnectionAsync();

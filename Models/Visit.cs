@@ -79,5 +79,23 @@ namespace Mladacina.Models
 
             await Helper.CloseLocalConnectionAsync();
         }
+
+        public static async Task<string> GetPatientIdAsync(string id)
+        {
+            await Helper.OpenLocalConnectionAsync();
+
+            string query = $"select * from \"Visit\" v join \"PatientDoctor\" pd on v.\"PatientDoctorId\"=pd.\"Id\" where v.\"Id\"='{id}'";
+            NpgsqlDataReader reader = await Helper.QueryAsync(query);
+            string patientId = null;
+            if (reader.HasRows)
+            {
+                await reader.ReadAsync();
+                patientId = reader["PatientId"].ToString();
+            }
+            await reader.CloseAsync();
+            await Helper.CloseLocalConnectionAsync();
+
+            return patientId;
+        }
     }
 }

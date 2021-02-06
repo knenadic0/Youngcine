@@ -48,6 +48,36 @@ namespace Mladacina.Controllers
             return View("Patients/View", model);
         }
 
+        public async Task<IActionResult> FinishDiagnose(string id)
+        {
+            User user = HttpContext.Session.GetObjectFromJson<User>("User");
+            if (user == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            else if (user.Role != Role.Doctor)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            try
+            {
+                await Visit.FinishDiagnoseAsync(id);
+            }
+            catch (PostgresException e)
+            {
+                TempData["AlertType"] = "danger";
+                TempData["AlertMessage"] = e.MessageText;
+                string patientId = await Visit.GetPatientIdAsync(id);
+                return RedirectToAction("PatientView", new { id = patientId });
+            }
+
+            TempData["AlertType"] = "success";
+            TempData["AlertMessage"] = "Diagnose marked as healed.";
+            string patient = await Visit.GetPatientIdAsync(id);
+            return RedirectToAction("PatientView", new { id = patient });
+        }
+
         [HttpGet]
         [Route("[controller]/Patients/Visits/Create")]
         public async Task<IActionResult> VisitCreate(string id)
@@ -136,38 +166,6 @@ namespace Mladacina.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            Doctor doctor = HttpContext.Session.GetObjectFromJson<Doctor>("UserRole");
-            List<Visit> model = await doctor.GetVisitsAsync();
-            return View("Visits/Index", model);
-        }
-
-        public async Task<IActionResult> FinishDiagnose(string id)
-        {
-            User user = HttpContext.Session.GetObjectFromJson<User>("User");
-            if (user == null)
-            {
-                return RedirectToAction("Index", "Home");
-            }
-            else if (user.Role != Role.Doctor)
-            {
-                return RedirectToAction("Index", "Home");
-            }
-
-            try
-            {
-                await Visit.FinishDiagnoseAsync(id);
-            }
-            catch (PostgresException e)
-            {
-                TempData["AlertType"] = "danger";
-                TempData["AlertMessage"] = e.MessageText;
-                Doctor doc = HttpContext.Session.GetObjectFromJson<Doctor>("UserRole");
-                List<Visit> visits = await doc.GetVisitsAsync();
-                return View("Visits/Index", visits);
-            }
-
-            TempData["AlertType"] = "success";
-            TempData["AlertMessage"] = "Diagnose marked as healed.";
             Doctor doctor = HttpContext.Session.GetObjectFromJson<Doctor>("UserRole");
             List<Visit> model = await doctor.GetVisitsAsync();
             return View("Visits/Index", model);

@@ -80,3 +80,6 @@ C:\Users\Kacko\source\repos\Mladacina\obj\Debug\netcoreapp3.1\Razor\Views\Doctor
 C:\Users\Kacko\source\repos\Mladacina\obj\Debug\netcoreapp3.1\Razor\Views\Doctor\Visits\Index.cshtml.g.cs
 C:\Users\Kacko\source\repos\Mladacina\obj\Debug\netcoreapp3.1\Razor\Views\Patient\Visits\Index.cshtml.g.cs
 C:\Users\Kacko\source\repos\Mladacina\obj\Debug\netcoreapp3.1\Razor\Views\Patient\Medicine\EditPrescription.cshtml.g.cs
+C:\Users\Kacko\source\repos\Mladacina\obj\Debug\netcoreapp3.1\Razor\Views\Pharmacist\Patients\Index.cshtml.g.cs
+C:\Users\Kacko\source\repos\Mladacina\obj\Debug\netcoreapp3.1\Razor\Views\Pharmacist\Patients\View.cshtml.g.cs
+C:\Users\Kacko\source\repos\Mladacina\obj\Debug\netcoreapp3.1\Razor\Views\Pharmacist\Patients\Medicine\Create.cshtml.g.cs

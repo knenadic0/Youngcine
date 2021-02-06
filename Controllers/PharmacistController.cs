@@ -4,6 +4,7 @@ using Mladacina.Models;
 using Npgsql;
 using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -12,6 +13,132 @@ namespace Mladacina.Controllers
     public class PharmacistController : Controller
     {
         #region Patients
+
+        public async Task<IActionResult> Patients()
+        {
+            User user = HttpContext.Session.GetObjectFromJson<User>("User");
+            if (user == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            else if (user.Role != Role.Pharmacist)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            List<Patient> patients = await Patient.GetPatientsAsync();
+            return View("Patients/Index", patients);
+        }
+
+        [HttpGet]
+        [Route("[controller]/Patients/View/{id}")]
+        public async Task<IActionResult> PatientView(string id)
+        {
+            User user = HttpContext.Session.GetObjectFromJson<User>("User");
+            if (user == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            else if (user.Role != Role.Pharmacist)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            Patient patient = await Patient.GetPatientAsync(id);
+            dynamic medicines = new ExpandoObject();
+            medicines.WithoutPrescription = await patient.GetPatientWithoutPrescriptionMedicinesAsync();
+            medicines.WithPrescription = await patient.GetPatientPrescriptionMedicinesAsync();
+            ViewData["Patient"] = patient;
+            return View("Patients/View", medicines);
+        }
+
+        public async Task<IActionResult> PrescriptionIssue(string id)
+        {
+            User user = HttpContext.Session.GetObjectFromJson<User>("User");
+            if (user == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            else if (user.Role != Role.Pharmacist)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            try
+            {
+                await Prescription.StartPrescriptionAsync(id);
+            }
+            catch (PostgresException e)
+            {
+                TempData["AlertType"] = "danger";
+                TempData["AlertMessage"] = e.MessageText;
+                Tuple<string, string> tuple = await Prescription.GetPatientIdAsync(id);
+                return RedirectToAction("PatientView", new { id = tuple.Item1 });
+            }
+
+            Tuple<string, string> model = await Prescription.GetPatientIdAsync(id);
+            TempData["AlertType"] = "success";
+            TempData["AlertMessage"] = $"Prescription medicine {model.Item2} marked as issued.";
+            return RedirectToAction("PatientView", new { id = model.Item1 });
+        }
+
+        [HttpGet]
+        [Route("[controller]/Patients/Medicine/Add")]
+        public async Task<IActionResult> MedicineAdd(string id)
+        {
+            User user = HttpContext.Session.GetObjectFromJson<User>("User");
+            if (user == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            else if (user.Role != Role.Pharmacist)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            Patient patient = await Patient.GetPatientAsync(id);
+            ViewData["Medicine"] = await Models.Medicine.GetMedicinesAsync(true);
+            ViewData["Patient"] = patient;
+            PatientMedicine model = new PatientMedicine()
+            {
+                PatientId = patient.Id
+            };
+            return View("Patients/Medicine/Create", model);
+        }
+
+        [HttpPost]
+        [Route("[controller]/Patients/Medicine/Add")]
+        public async Task<IActionResult> MedicineAdd(PatientMedicine model)
+        {
+            User user = HttpContext.Session.GetObjectFromJson<User>("User");
+            if (user == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            else if (user.Role != Role.Pharmacist)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            Pharmacist pharmacist = HttpContext.Session.GetObjectFromJson<Pharmacist>("UserRole");
+            try
+            {
+                model.PharmacistId = pharmacist.Id;
+                await model.CreatePatientMedicineAsync();
+            }
+            catch (PostgresException e)
+            {
+                ViewData["Medicine"] = await Models.Medicine.GetMedicinesAsync();
+                ViewData["Patient"] = await Patient.GetPatientAsync(model.Id.ToString());
+                TempData["AlertType"] = "danger";
+                TempData["AlertMessage"] = e.MessageText;
+                return RedirectToAction("PatientView", new { id = model.PatientId.ToString() });
+            }
+
+            TempData["AlertType"] = "success";
+            TempData["AlertMessage"] = $"Medicine successfully issued.";
+            return RedirectToAction("PatientView", new { id = model.PatientId.ToString() });
+        }
 
         #endregion Patients
 

@@ -18,11 +18,15 @@ namespace Mladacina.Models
         [DataType(DataType.MultilineText)]
         public string Description { get; set; }
 
-        public static async Task<List<Medicine>> GetMedicinesAsync()
+        public static async Task<List<Medicine>> GetMedicinesAsync(bool prescription = false)
         {
             await Helper.OpenLocalConnectionAsync();
 
             string query = $"select * from \"Medicine\"";
+            if (prescription)
+            {
+                query += " where \"WithoutPrescription\" is true";
+            }
             NpgsqlDataReader reader = await Helper.QueryAsync(query);
             List<Medicine> medicines = new List<Medicine>();
             while (await reader.ReadAsync())

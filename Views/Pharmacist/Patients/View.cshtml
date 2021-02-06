@@ -1,0 +1,181 @@
+﻿@using Mladacina.Models;
+@model dynamic
+@{
+    ViewData["Title"] = "Patients";
+    ViewData["Role"] = "Pharmacist";
+    var patient = (Patient)ViewData["Patient"];
+}
+
+<div>
+    <div class="w-100 mt-lg-5 container-fluid">
+        <div class="row">
+            <div class="col-lg-9">
+                <h3 class="role">@patient.User.FirstName @patient.User.LastName's without prescription medicine</h3>
+            </div>
+            <div class="col-lg-3 text-right">
+                <a class="btn btn-info" asp-action="Patients">
+                    <i class="fa fa-chevron-left" aria-hidden="true"></i>&nbsp;&nbsp;Back
+                </a>
+                <a class="btn btn-info" asp-action="MedicineAdd" asp-route-id="@patient.Id" data-toggle="tooltip" data-placement="top" title="New without prescription medicine">
+                    <i class="fa fa-plus" aria-hidden="true"></i>&nbsp;&nbsp;New
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid mt-4 mb-5">
+        @if (Helper.HasProperty(Model, "WithoutPrescription") && Model.WithoutPrescription != null && Model.WithoutPrescription.Count > 0)
+        {
+            <table class="table table-hover mt-4" id="withoutPrescriptionTable">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Price</th>
+                        <th>Quantity</th>
+                        <th class="text-center">Taken Since</th>
+                        <th class="text-center">Taken Until</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (PatientMedicine item in Model.WithoutPrescription)
+                    {
+                        <tr>
+                            <td>@item.Medicine.Name</td>
+                            <td>@item.Medicine.Type.ToString()</td>
+                            <td>@item.Medicine.Price HRK</td>
+                            <td>
+                                @if (item.Medicine.Type == MedicineType.Syrup)
+                                {
+                                    <span>@item.Medicine.Quantity ml</span>
+                                }
+                                else
+                                {
+                                    <span>@item.Medicine.Quantity pcs</span>
+                                }
+                            </td>
+                            <td class="text-center">
+                                @if (item.DateFrom == null)
+                                {
+                                    <span>&infin;</span>
+                                }
+                                else
+                                {
+                                    <span>@item.DateFrom.ToNormalDate()</span>
+                                }
+                            </td>
+                            <td class="text-center">
+                                @if (item.DateTo == null)
+                                {
+                                    <span>&infin;</span>
+                                }
+                                else
+                                {
+                                    <span>@item.DateTo.Value.ToNormalDate()</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <div class="card-body m-5">
+                <h5 class="text-center m-5">No without prescription medicine yet.</h5>
+            </div>
+        }
+    </div>
+    <hr />
+    <div class="w-100 mt-5 container-fluid">
+        <div class="row">
+            <div class="col-lg-12">
+                <h3 class="role">@patient.User.FirstName @patient.User.LastName's prescriptioned medicine</h3>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid mt-4">
+        @if (Helper.HasProperty(Model, "WithPrescription") && Model.WithPrescription != null && Model.WithPrescription.Count > 0)
+        {
+            <table class="table table-hover mt-4" id="withPrescriptionTable">
+                <thead>
+                    <tr>
+                        <th class="align-middle">Diagnosis</th>
+                        <th class="align-middle">Name</th>
+                        <th class="align-middle">Type</th>
+                        <th class="align-middle">Price</th>
+                        <th class="align-middle">Quantity</th>
+                        <th class="align-middle text-center">Taken Since</th>
+                        <th class="align-middle text-center">Taken Until</th>
+                        <th class="align-middle text-center">Issue</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (Prescription item in Model.WithPrescription)
+                    {
+                        <tr>
+                            <td class="align-middle">@item.Visit.Diagnosis</td>
+                            <td class="align-middle">@item.Medicine.Name</td>
+                            <td class="align-middle">@item.Medicine.Type.ToString()</td>
+                            <td class="align-middle">@item.Medicine.Price HRK</td>
+                            <td class="align-middle">
+                                @if (item.Medicine.Type == MedicineType.Syrup)
+                                {
+                                    <span>@item.Medicine.Quantity ml</span>
+                                }
+                                else
+                                {
+                                    <span>@item.Medicine.Quantity pcs</span>
+                                }
+                            </td>
+                            <td class="text-center align-middle">
+                                @if (item.DateFrom == null)
+                                {
+                                    <span>&infin;</span>
+                                }
+                                else
+                                {
+                                    <span>@item.DateFrom.Value.ToNormalDate()</span>
+                                }
+                            </td>
+                            <td class="text-center align-middle">
+                                @if (item.DateTo == null)
+                                {
+                                    <span>&infin;</span>
+                                }
+                                else
+                                {
+                                    <span>@item.DateTo.Value.ToNormalDate()</span>
+                                }
+                            </td>
+                            <td class="text-center align-middle">
+                                @if (!item.DateFrom.HasValue && !item.DateTo.HasValue)
+                                {
+                                    <a asp-action="PrescriptionIssue" asp-route-id="@item.Id" data-toggle="tooltip" data-placement="top" title="Issue to patient">
+                                        <i class="fa fa-check" aria-hidden="true"></i>
+                                    </a>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <div class="card-body m-5">
+                <h5 class="text-center m-5">No prescriptioned medicine yet.</h5>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script src="http://cdn.datatables.net/1.10.23/js/jquery.dataTables.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#withoutPrescriptionTable').DataTable();
+            $('#withPrescriptionTable').DataTable();
+            $('[data-toggle="tooltip"]').tooltip();
+        });
+    </script>
+}
