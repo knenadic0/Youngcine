@@ -139,3 +139,15 @@ li.active {
 .medicine-dropdown > .bootstrap-select {
     width: 100% !important;
 }
+
+tr.hide-table-padding td {
+    padding: 0 !important;
+}
+
+#viewPrescriptions {
+    color: #0366d6;
+}
+
+td.text-right {
+    padding-right: 18px !important;
+}
