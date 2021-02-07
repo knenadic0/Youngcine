@@ -1,11 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Npgsql;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Configuration;
-using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -43,22 +40,31 @@ namespace Mladacina.Models
 
             Guid uuid = Guid.NewGuid();
             string query = $"insert into \"User\" values('{uuid}', '{model.FirstName}', '{model.LastName}', '{model.Email}', '{SHA256(model.Password)}', " +
-                $"'{model.DOB.ToDatabaseDate()}', '{model.Sex}', ROW('{model.Street}', '{model.Number}', '{model.City}'))";
+                $"'{model.DOB.ToDatabaseDate()}', '{model.Sex}', ROW('{model.Street}', '{model.Number}', '{model.City}'));";
             await Helper.NonQueryAsync(query);
 
             switch (model.Role)
             {
                 case Role.Patient:
-                    query = $"insert into \"Patient\" values(default, '{uuid}', '{model.SN}')";
+                    query = $"insert into \"Patient\" values(default, '{uuid}', '{model.SN}');";
                     break;
                 case Role.Pharmacist:
-                    query = $"insert into \"Pharmacist\" values (default, '{uuid}', '{(model.ActiveSince.HasValue ? model.ActiveSince.Value.ToDatabaseDate() : string.Empty)}')";
+                    query = $"insert into \"Pharmacist\" values (default, '{uuid}', '{(model.ActiveSince.HasValue ? model.ActiveSince.Value.ToDatabaseDate() : string.Empty)}');";
                     break;
                 case Role.Doctor:
-                    query = $"insert into \"Doctor\" values (default, '{uuid}', '{(model.ActiveSince.HasValue ? model.ActiveSince.Value.ToDatabaseDate() : string.Empty)}')";
+                    query = $"insert into \"Doctor\" values (default, '{uuid}', '{(model.ActiveSince.HasValue ? model.ActiveSince.Value.ToDatabaseDate() : string.Empty)}');";
                     break;
             }
-            await Helper.NonQueryAsync(query);
+            try
+            {
+                await Helper.NonQueryAsync(query);
+            }
+            catch (PostgresException e)
+            {
+                query = $"delete from \"User\" where \"Id\"='{uuid}'";
+                await Helper.NonQueryAsync(query);
+                throw e;
+            }
 
             await Helper.CloseLocalConnectionAsync();
         }

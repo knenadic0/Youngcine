@@ -1,5 +1,3 @@
-using System;
-
 namespace Mladacina.Models
 {
     public class ErrorViewModel
