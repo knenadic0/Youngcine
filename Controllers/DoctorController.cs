@@ -10,6 +10,18 @@ namespace Mladacina.Controllers
 {
     public class DoctorController : Controller
     {
+        [HttpGet]
+        public IActionResult Index()
+        {
+            User user = HttpContext.Session.GetObjectFromJson<User>("User");
+            if (user == null)
+            {
+                return RedirectToAction("Login");
+            }
+
+            return View("Index", user);
+        }
+
         #region Patients
 
         public async Task<IActionResult> Patients()

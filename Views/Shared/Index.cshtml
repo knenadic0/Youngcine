@@ -89,6 +89,24 @@
         </div>
     </div>
     <div class="card mt-4 pic">
-        <img src="~/media/pictures/cards/@(Model.Role.ToString()).jpg" />
+        <a asp-action="ChangePicture" data-toggle="tooltip" data-placement="bottom" title="Change picture">
+            @if (Model.Picture != 0)
+            {
+                <img src="~/media/pictures/profile/@(Model.Id).jpg" />
+
+            }
+            else
+            {
+                <img src="~/media/pictures/cards/@(Model.Role.ToString()).jpg" />
+            }
+        </a>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('[data-toggle="tooltip"]').tooltip();
+        });
+    </script>
+}

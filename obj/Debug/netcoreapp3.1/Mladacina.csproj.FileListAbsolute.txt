@@ -47,7 +47,6 @@ C:\Users\Kacko\source\repos\Mladacina\obj\Debug\netcoreapp3.1\scopedcss\bundle\M
 C:\Users\Kacko\source\repos\Mladacina\obj\Debug\netcoreapp3.1\Mladacina.TagHelpers.input.cache
 C:\Users\Kacko\source\repos\Mladacina\obj\Debug\netcoreapp3.1\Mladacina.TagHelpers.output.cache
 C:\Users\Kacko\source\repos\Mladacina\obj\Debug\netcoreapp3.1\Mladacina.RazorCoreGenerate.cache
-C:\Users\Kacko\source\repos\Mladacina\obj\Debug\netcoreapp3.1\Razor\Views\Home\Index.cshtml.g.cs
 C:\Users\Kacko\source\repos\Mladacina\obj\Debug\netcoreapp3.1\Razor\Views\Home\Login.cshtml.g.cs
 C:\Users\Kacko\source\repos\Mladacina\obj\Debug\netcoreapp3.1\Razor\Views\Home\Register.cshtml.g.cs
 C:\Users\Kacko\source\repos\Mladacina\obj\Debug\netcoreapp3.1\Razor\Views\Shared\Error.cshtml.g.cs
@@ -83,3 +82,5 @@ C:\Users\Kacko\source\repos\Mladacina\obj\Debug\netcoreapp3.1\Razor\Views\Patien
 C:\Users\Kacko\source\repos\Mladacina\obj\Debug\netcoreapp3.1\Razor\Views\Pharmacist\Patients\Index.cshtml.g.cs
 C:\Users\Kacko\source\repos\Mladacina\obj\Debug\netcoreapp3.1\Razor\Views\Pharmacist\Patients\View.cshtml.g.cs
 C:\Users\Kacko\source\repos\Mladacina\obj\Debug\netcoreapp3.1\Razor\Views\Pharmacist\Patients\Medicine\Create.cshtml.g.cs
+C:\Users\Kacko\source\repos\Mladacina\obj\Debug\netcoreapp3.1\Razor\Views\Home\ChangePicture.cshtml.g.cs
+C:\Users\Kacko\source\repos\Mladacina\obj\Debug\netcoreapp3.1\Razor\Views\Shared\Index.cshtml.g.cs

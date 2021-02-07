@@ -1,4 +1,5 @@
-﻿using Npgsql;
+﻿using Microsoft.AspNetCore.Http;
+using Npgsql;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -27,7 +28,9 @@ namespace Mladacina.Models
         public string Street { get; set; }
         public int Number { get; set; }
         public string City { get; set; }
-        public long Picture { get; set; }
+        public uint Picture { get; set; }
+        [DisplayName("Picture file")]
+        public IFormFile PictureFile { get; set; }
         public Role Role { get; set; } = Role.Patient;
         [DisplayName("Active since")]
         public DateTime? ActiveSince { get; set; }
@@ -60,26 +63,30 @@ namespace Mladacina.Models
             await Helper.CloseLocalConnectionAsync();
         }
 
-        public static async Task<Tuple<int, object>> LoginUserAsync(User model)
+        public async Task<Tuple<int, object>> LoginUserAsync()
         {
             await Helper.OpenLocalConnectionAsync();
 
-            string query = $"select * from \"User\" where \"Email\"='{model.Email}' and \"Password\"='{SHA256(model.Password)}'";
+            string query = $"select * from \"User\" where \"Email\"='{Email}' and \"Password\"='{SHA256(Password)}'";
             NpgsqlDataReader reader = await Helper.QueryAsync(query);
             int role = -1;
             object roleObject = null;
             await reader.ReadAsync();
-            model.Id = (Guid)reader["Id"];
-            model.FirstName = reader["FirstName"].ToString();
-            model.LastName = reader["LastName"].ToString();
+            Id = (Guid)reader["Id"];
+            FirstName = reader["FirstName"].ToString();
+            LastName = reader["LastName"].ToString();
+            if (reader["Picture"] != DBNull.Value)
+            {
+                Picture = (uint)reader["Picture"];
+            }
             await reader.CloseAsync();
 
-            query = $"select * from \"Patient\" where \"UserId\"='{model.Id}'";
+            query = $"select * from \"Patient\" where \"UserId\"='{Id}'";
             reader = await Helper.QueryAsync(query);
             if (reader.HasRows)
             {
                 role = 1;
-                model.Role = Role.Patient;
+                Role = Role.Patient;
 
                 await reader.ReadAsync();
                 Patient patient = new Patient()
@@ -92,12 +99,12 @@ namespace Mladacina.Models
             }
             await reader.CloseAsync();
 
-            query = $"select * from \"Pharmacist\" where \"UserId\"='{model.Id}'";
+            query = $"select * from \"Pharmacist\" where \"UserId\"='{Id}'";
             reader = await Helper.QueryAsync(query);
             if (reader.HasRows)
             {
                 role = 2;
-                model.Role = Role.Pharmacist;
+                Role = Role.Pharmacist;
 
                 await reader.ReadAsync();
                 Pharmacist pharmacist = new Pharmacist()
@@ -110,12 +117,12 @@ namespace Mladacina.Models
             }
             await reader.CloseAsync();
 
-            query = $"select * from \"Doctor\" where \"UserId\"='{model.Id}'";
+            query = $"select * from \"Doctor\" where \"UserId\"='{Id}'";
             reader = await Helper.QueryAsync(query);
             if (reader.HasRows)
             {
                 role = 3;
-                model.Role = Role.Doctor;
+                Role = Role.Doctor;
 
                 await reader.ReadAsync();
                 Doctor doctor = new Doctor()
@@ -130,6 +137,20 @@ namespace Mladacina.Models
 
             await Helper.CloseLocalConnectionAsync();
             return await Task.FromResult(Tuple.Create(role, roleObject));
+        }
+
+        public async Task RemovePictureAsync()
+        {
+            await Helper.OpenLocalConnectionAsync();
+
+            string query = $"update \"User\" set \"Picture\"=null where \"Id\"='{Id}'";
+            await Helper.NonQueryAsync(query);
+            query = $"select lo_unlink(\"Picture\") from \"User\" where \"Id\"='{Id}'";
+            NpgsqlDataReader reader = await Helper.QueryAsync(query);
+            await reader.ReadAsync();
+            await reader.CloseAsync();
+
+            await Helper.CloseLocalConnectionAsync();
         }
 
         private static string SHA256(string randomString)
