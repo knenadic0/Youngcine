@@ -174,7 +174,7 @@ namespace Mladacina.Controllers
 
         [HttpGet]
         [Route("[controller]/Medicine/Create")]
-        public async Task<IActionResult> MedicineCreate()
+        public IActionResult MedicineCreate()
         {
             User user = HttpContext.Session.GetObjectFromJson<User>("User");
             if (user == null)

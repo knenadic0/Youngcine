@@ -36,7 +36,7 @@ namespace Mladacina.Controllers
 
         [HttpGet]
         [Route("[controller]/Picture/Change")]
-        public async Task<IActionResult> ChangePicture()
+        public IActionResult ChangePicture()
         {
             User model = HttpContext.Session.GetObjectFromJson<User>("User");
             if (model == null)
@@ -79,9 +79,13 @@ namespace Mladacina.Controllers
                 await model.ChangePictureAsync(filePath);
                 System.IO.File.Delete(filePath);
 
+                HttpContext.Session.Clear();
+                await LoginUser(user);
+
                 TempData["AlertType"] = "success";
-                TempData["AlertMessage"] = "Picture successfully changed. You can log in now.";
-                return RedirectToAction("Logout");
+                TempData["AlertMessage"] = "Picture successfully changed.";
+
+                return RedirectToAction("Index");
             }
 
             return RedirectToAction("Index");
@@ -100,9 +104,13 @@ namespace Mladacina.Controllers
             await model.RemovePictureAsync();
             System.IO.File.Delete(Path.Combine(HostEnvironment.WebRootPath, "media", "pictures", "profile", model.Id.ToString() + ".jpg"));
 
+            HttpContext.Session.Clear();
+            await LoginUser(model);
+
             TempData["AlertType"] = "success";
-            TempData["AlertMessage"] = "Picture successfully removed. You can log in now.";
-            return RedirectToAction("Logout");
+            TempData["AlertMessage"] = "Picture successfully removed.";
+
+            return RedirectToAction("Index");
         }
 
         [HttpGet]
@@ -125,25 +133,7 @@ namespace Mladacina.Controllers
                 return View("Login", model);
             }
 
-            try
-            {
-                Tuple<int, object> userRole = await model.LoginUserAsync();
-                if (userRole.Item1 == -1)
-                {
-                    ModelState.AddModelError("Login", "Inocorrect email or password.");
-                    return View("Login", model);
-                }
-
-                HttpContext.Session.SetObjectAsJson("UserRole", userRole.Item2);
-            }
-            catch (Exception e)
-            {
-                ModelState.AddModelError("Login", "Inocorrect email or password.");
-                return View("Login", model);
-            }
-
-            HttpContext.Session.SetObjectAsJson("User", model);
-            return RedirectToAction("Index");
+            return await LoginUser(model);
         }
 
         [HttpGet]
@@ -186,6 +176,29 @@ namespace Mladacina.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        private async Task<IActionResult> LoginUser(User model)
+        {
+            try
+            {
+                Tuple<int, object> userRole = await model.LoginUserAsync();
+                if (userRole.Item1 == -1)
+                {
+                    ModelState.AddModelError("Login", "Inocorrect email or password.");
+                    return View("Login", model);
+                }
+
+                HttpContext.Session.SetObjectAsJson("UserRole", userRole.Item2);
+            }
+            catch (Exception)
+            {
+                ModelState.AddModelError("Login", "Inocorrect email or password.");
+                return View("Login", model);
+            }
+
+            HttpContext.Session.SetObjectAsJson("User", model);
+            return RedirectToAction("Index");
         }
     }
 }

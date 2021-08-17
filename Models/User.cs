@@ -72,8 +72,17 @@ namespace Mladacina.Models
         public async Task<Tuple<int, object>> LoginUserAsync()
         {
             await Helper.OpenLocalConnectionAsync();
+            string query;
 
-            string query = $"select * from \"User\" where \"Email\"='{Email}' and \"Password\"='{SHA256(Password)}'";
+            if (Id == Guid.Empty)
+            {
+                query = $"select * from \"User\" where \"Email\"='{Email}' and \"Password\"='{SHA256(Password)}'";
+            }
+            else
+            {
+                query = $"select * from \"User\" where \"Id\"='{Id}'";
+            }
+
             NpgsqlDataReader reader = await Helper.QueryAsync(query);
             int role = -1;
             object roleObject = null;
@@ -149,6 +158,7 @@ namespace Mladacina.Models
         {
             await Helper.OpenLocalConnectionAsync();
 
+            Picture = 0;
             string query = $"update \"User\" set \"Picture\"=null where \"Id\"='{Id}'";
             await Helper.NonQueryAsync(query);
             query = $"select lo_unlink(\"Picture\") from \"User\" where \"Id\"='{Id}'";
